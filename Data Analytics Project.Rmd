@@ -1,0 +1,1354 @@
+---
+title: "**Marketing Data Analysis Report**"
+author: "Rhea Toves, Marketing & Communications Social Media Intern - WSU"
+
+header-includes:
+   - \usepackage{bbm}
+   - \usepackage{amssymb}
+   - \usepackage{amsmath}
+   - \usepackage{graphicx} #displays graphics
+   - \usepackage{natbib} #displays citations
+   - \usepackage{float} #positions your graphs
+   - \floatplacement{figure}{H} #forced all visuals to appear the way I coded
+   
+output: pdf_document
+## pdf_document: default
+fontsize: 11pt
+---
+
+```{r setup, echo=TRUE, include=FALSE}
+
+knitr::opts_chunk$set(tidy.opts=list(width.cutoff=60),tidy=TRUE)
+
+library(knitr)
+library(dplyr)
+library(ggplot2)
+library(gridExtra)
+library(patchwork)
+
+insta_data <- read.csv("WSU_Dining Instagram Analytics.csv", stringsAsFactors = FALSE)
+insta_stories <- read.csv("WSU_Dining Instagram Story Analytics.csv", stringsAsFactors = FALSE)
+insta_followers <- read.csv("WSU_Dining Instagram Followers.csv", stringsAsFactors = FALSE)
+insta_audience <- read.csv("WSU_Dining Instagram Audience.csv", stringsAsFactors = FALSE)
+insta_top_cities <- read.csv("WSU_Dining Instagram Top Cities.csv", stringsAsFactors = FALSE)
+twitter_data <- read.csv("WSU_Dining Twitter Analytics.csv", stringsAsFactors = FALSE)
+twitter_followers <- read.csv("WSU_Dining Twitter Followers.csv", stringsAsFactors = FALSE)
+
+```
+
+# About
+
+My name is Rhea Toves and I started as a Social Media Intern with Washington State University beginning of Spring 2022 semester, making this my second semester with the Marketing & Communications, Division of Student Affairs team. This is my fourth year at Washington State University studying Data Analytics with a concentration in Data Visualization.
+
+I have taken previous software programming, data analytics, and informatics courses that have led me onto this field path. I transferred to Washington State University from Everett Community College (EvCC) where I received my Associate in Business Degree. While at EvCC I worked with Student LIFE as a Social Media and Publicity Intern. This previous internship opportunity led to multiple opportunities where I worked with social media analytical insights, with intentions of boosting engagement throughout the year. Studying marketing analytics holds the utmost importance in structuring marketing plans and strategies in any industry.
+
+# Project Description
+
+This past year I have been implementing a consistent posting of series and elements to the @WSU_dining Instagram and Twitter social media accounts. Experimenting series content consists of student polls, student employee profiles, Instagram stories, dining center meal highlights, videos, graphics, informative, and general posts. This report will track the various analytical insights provided by social media platforms, Instagram and Twitter, as well as study the overall content the WSU dining community engages with.
+
+Starting off by collection data from archived posts will create a baseline for the social media insights over the years. I have collected data from 2019-2022 and will perform comparisons between with this information and data from current time. In regards to the continuous content I am currently releasing, I will give these posts an appropriate amount of time, one month, for students to engage with. With this project I’ll put the data collecting/implementing skills I have learned in previous and current courses into practice. Data sets sourced from Instagram Analytics and Facebook Meta Business Suite will be created, combined, and transformed using Microsoft Excel through CSV files. The programming language, RStudio, will be used to create data visualization and the overall report. This project has a timeline of: June 21 - December 12, 2022 (seven months) and 55 hours of work is needed to complete internship (one credit) requirement.
+
+# Project Goals
+
+The overall goal of this project is to increase engagement for @WSU_dining on both social media platforms, Instagram and Twitter. This project will analyze overall post insights from Instagram and Twitter, follower growth or decline from both social media platforms, and Instagram story analytics. When implementing new content series, this project will measure the overall response from students that will support whether we continue the series' presence on both of the accounts. This project will be a visualize aid in representing student engagement throughout previous years and from current postings.
+
+# Research Questions
+
+As this report will analyze how Instagram and Twitter accounts have been performing over the years and in current time, we will also focus on specific analytical questions:
+
+1) Do users respond better to professional or live content better?
+2) How are users responding to different types of content?
+3) Are videos and graphics worth continuing in future semesters?
+4) How are the series performing and which ones would be worth continuing? 
+
+# Instagram Data Sets
+
+## Overall Instagram Analytics
+
+This data set represents the overall analytics dating back in 2019 to 2022, collected from the @WSU_dining Instagram Account. Consisting of 16 variables and over 300 observations, this data analyzes every insight the Instagram app provides and more.
+
+```{r, echo=FALSE, include=TRUE, warning=FALSE}
+
+head(insta_data, nrows=10)
+
+```
+
+## Instagram Story Analytics
+
+This data set focuses on Instagram story insights collected dating back in 2020-2022, from the @WSU_dining account. Consisting of 12 variables and over 50 observations, this data analyzes every insight Facebook Meta Business Suite provides and more.
+
+```{r, echo=FALSE, include=TRUE, warning=FALSE}
+
+head(insta_stories, nrows=10)
+
+```
+
+## Instagram Followers Demographics Analytics
+
+This data set is tracking audience demographics from the @WSU_dining Instagram. Data provided from Facebook Meta Business Suite insight analytics. Consisting of 2-3 variables and 5-6 observations.
+
+```{r, echo=FALSE, include=TRUE, warning=FALSE}
+
+head(insta_audience, nrows=10)
+head(insta_top_cities, nrows=10)
+
+```
+
+# Twitter Data Sets
+
+## Overall Twitter Analytics
+
+This data set displays the overall analytics from the @WSU_dining Twitter account. Consisting of 19 columns and over 200 rows, this data analyzes every insight the Twitter app provides and more.
+
+```{r, echo=FALSE, include=TRUE, warning=FALSE}
+
+head(twitter_data, nrows=10)
+
+```
+
+## Twitter Followers Analytics
+
+This data set is tracking audience demographics from the @WSU_dining Twitter. Data provided from Twitter analytics. Consisting of 2 variables and 11 observations.
+
+```{r, echo=FALSE, include=TRUE, warning=FALSE}
+
+head(twitter_followers, nrows=10)
+
+```
+
+# Instagram Audience 2022
+
+## Following Growth
+
+```{r, echo=FALSE, include=TRUE, warning=FALSE}
+
+insta_followers2 <- insta_followers %>%
+  mutate(Month = factor(Month, levels = month.name))
+
+insta.fol.2022 <- ggplot(insta_followers2, aes(x=Month, y=Followers)) +
+  geom_bar(stat = "identity") + xlab("Month") + ylab("Follower Growth") +
+  ggtitle("Growth in 2022")
+
+insta.fol.2022
+
+```
+
+The jump in follower count in August is due to a shoutout from the main WSU Pullman Instagram account. This account tagged us in a story full of other WSU resources and this mention generated a lot of traction. Generating 125 followers in a span of two days, this traction has changed the Instagram account in a many ways from then on.
+
+## Audience Demographics
+
+```{r, echo=FALSE, include=TRUE, warning=FALSE}
+
+perc.women <- ggplot(insta_audience, aes(x="", y=Women, fill=Age)) +
+  geom_bar(stat="identity", width=1) +
+  coord_polar("y", start=8) +
+  geom_text(aes(label = paste0(Women, "%")), position = position_stack(vjust=0.5))
+
+perc.men <- ggplot(insta_audience, aes(x="", y=Men, fill=Age)) +
+  geom_bar(stat="identity", width=1) +
+  coord_polar("y", start=8) +
+  geom_text(aes(label = paste0(Men, "%")), position = position_stack(vjust=0.5))
+
+perc.women + perc.men
+
+```
+
+```{r, echo=FALSE, include=TRUE, warning=FALSE}
+
+aud.cities <- ggplot(insta_top_cities, aes(x="", y=Value, fill=Cities)) +
+  geom_bar(stat="identity", width=1) +
+  coord_polar("y", start=8) +
+  geom_text(aes(label = paste0(Value, "%")), position = position_stack(vjust=0.5)) +
+  ggtitle("Instagram User Cities")
+
+aud.cities
+
+```
+
+This data has been collected directly from the Instagram Insights. The first pie chart above show the Instagram following consists of more women than men, with our main reach of audience age being from 18-24 years old. From the second pie chart we can see most of the users who follow the account reside in Pullman, Washington.
+
+# Twitter Audience 2022
+
+## Following Growth and Decline
+
+```{r, echo=FALSE, include=TRUE, warning=FALSE}
+
+twitter_followers2 <- twitter_followers %>%
+  mutate(Month = factor(Month, levels = month.name))
+
+twitter.fol.2022 <- ggplot(twitter_followers2, aes(x=Month, y=Followers)) +
+  geom_bar(stat = "identity") + xlab("Month") + ylab("Follower Growth") +
+  ggtitle("Followers in 2022")
+
+twitter.fol.2022
+
+```
+
+The following growth on Twitter is shown to fluctuate. With the account consisting of a little over 1,000 followers, there seems to be more decline than growth throughout this year. 
+
+------------------------------------------------------------------------------------------------------------------------------
+
+# Instagram Engagement 2020-21
+
+Instagram implemented analytical insights halfway through the year of 2019 and due to the lack of data, we will not be analyzing the insights from 2019. The x-axis on the graphs below are displaying individual posts and the y-axis are tracking different insights.
+
+## 2020 Instagram Enagement
+
+```{r, echo=FALSE, include=TRUE, warning=FALSE}
+
+insta.engage.20 <- insta_data %>%
+  filter(Year == "2020") %>%
+  mutate(Date=factor(Date, levels=make.unique(Date)))
+
+insta.engage.20.model <- ggplot(insta.engage.20, aes(x=Date, y=as.numeric(Reach))) +
+  geom_bar(stat = "identity") + xlab("Posts Throughout Year") + ylab("Reach/Post") +
+  ggtitle("Engagement in 2020")
+
+insta.engage.20.model + theme(axis.text.x=element_blank(), axis.ticks.x=element_blank())
+
+```
+
+The graph above displays an exponential growth in engagement in 2020. As the y-axis is counting by 50's, we can see the Reach counting by 50's. The insight, Reach, consists of the number of users who have seen the content. The more engagement the post receives, the more users are reached. The jump we see from the graph above can be related to COVID-19. Posts began to achieve a Reach over 100 at the start of August 2020 when schools have transferred to Zoom and took off from there. The graph above is displaying a high flow in Reach with the average Reach count per post being 104.716. 
+
+## 2021 Instagram Enagement
+
+```{r, echo=FALSE, include=TRUE, warning=FALSE}
+
+insta.engage.21 <- insta_data %>%
+  filter(Year == "2021") %>%
+  mutate(Date=factor(Date, levels=make.unique(Date)))
+
+insta.engage.21.model <- ggplot(insta.engage.21, aes(x=Date, y=as.numeric(Reach))) +
+  geom_bar(stat = "identity") + xlab("Posts Throughout Year") + ylab("Reach/Post") +
+  ggtitle("Engagement in 2021")
+
+insta.engage.21.model + theme(axis.text.x=element_blank(), axis.ticks.x=element_blank())
+
+```
+
+With students coming back to campus during the year, 2021, this made a huge difference in engagement. The graph above is displaying a high flow in Reach with the average Reach count per post being 226.9022. 
+
+## 2020 vs 2021 Instagram Engagement
+
+```{r, echo=FALSE, include=TRUE, warning=FALSE}
+
+insta.engage.20.model + theme(axis.text.x=element_blank(), axis.ticks.x=element_blank()) +
+insta.engage.21.model + theme(axis.text.x=element_blank(), axis.ticks.x=element_blank())
+
+```
+
+Comparing both engagement graphs from 2020 and 2021, we can see the jump at the start of campus adjusting to COVID-19 restrictions and the ongoing growth throughout the years. There's a steady Reach per post from August 2020 and so on. The average Reach for 2020, 104.71, and 226.9022 for 2021 can be visualized through the graphs above.
+
+# Twitter Engagement Over the Years
+
+To keep consistency with Instagram analytics, we will not be analyzing the insights from 2019. The x-axis on the graphs below are displaying individual posts and the y-axis are tracking different insights.
+
+## 2020 Twitter Engagement
+
+```{r, echo=FALSE, include=TRUE, warning=FALSE}
+
+twitter.engage.20 <- twitter_data %>%
+  filter(Year == "2020") %>%
+  mutate(Date=factor(Date, levels=make.unique(Date)))
+
+twitter.engage.20.model <- ggplot(twitter.engage.20, aes(x=Date, y=as.numeric(Engage..Rate....))) +
+  geom_bar(stat = "identity") + xlab("Posts Throughout Year") + ylab("Engagement/Post") +
+  ggtitle("Engagement in 2020")
+
+twitter.engage.20.model + theme(axis.text.x=element_blank(), axis.ticks.x=element_blank())
+
+```
+
+This data consists of the rate of user engagement tracked by Twitter analytics. Engagement Rate is a percentage that is calculated by the number of engagements divided by the total number of impressions. Engagement Rate seems to be pretty low for Twitter with the average Engagement Rate per post being 1.584615. The obvious outlier 10.5% is an informative post on COVID-19 updates. Users seem to react well to information updates based on this number.
+
+## 2021 Twitter Engagement
+
+```{r, echo=FALSE, include=TRUE, warning=FALSE}
+
+twitter.engage.21 <- twitter_data %>%
+  filter(Year == "2021") %>%
+  mutate(Date=factor(Date, levels=make.unique(Date))) %>%
+  arrange(Engage..Rate....)
+
+twitter.engage.21.model <- ggplot(twitter.engage.21, aes(x=as.character(Date), y=as.numeric(Engage..Rate....))) +
+  geom_bar(stat = "identity") + xlab("Posts Throughout Year") + ylab("Engagement/Post") +
+  ggtitle("Engagement in 2021")
+
+twitter.engage.21.model + theme(axis.text.x=element_blank(), axis.ticks.x=element_blank())
+
+```
+
+Engagement Rates in 2021 seem to pick up. There are a few blank spots on the x-axis which show the posts that received an Engagement Rate of zero. The outlier is an informative post for the Mini Meal Plan. Users continue to respond well with informative posts on the Twitter account. The average Engagement Rate per post in 2021 of 2.040909 has increased since 2020.
+
+## Year 2020 vs 2021 Twitter Engagement
+
+```{r, echo=FALSE, include=TRUE, warning=FALSE}
+
+twitter.engage.20.model + theme(axis.text.x=element_blank(), axis.ticks.x=element_blank()) +
+twitter.engage.21.model + theme(axis.text.x=element_blank(), axis.ticks.x=element_blank())
+
+```
+
+More posts were published in the year 2021. There's more of a consistent Engagement Rate in 2021, compared to 2020. The Engagement Rate in 2021 is shown to be more consistent as more posts came out. The average Engagement Rate in 2020, 1.584615 is shown to increase to 2.040909 in 2021. Performance has been better between these two years.
+
+# Instagram Engagement Month to Month 2022
+
+Reach per post in 2022 will be analyzed from month to month as this current data is important to study closely. As posts were published in January. Giving users an appropriate amount of time to engage with the posts, insights were recorded a month after being posted.
+
+## January - June
+
+```{r, echo=FALSE, include=TRUE, warning=FALSE}
+
+#January
+insta.jan <- insta_data %>%
+  filter(Year == "1") %>%
+  mutate(Date=factor(Date, levels=make.unique(Date)))
+
+insta.jan.model <- ggplot(insta.jan, aes(x=Date, y=as.numeric(Reach))) +
+  geom_bar(stat = "identity") + xlab("Post") + ylab("Reach/Post") +
+  ggtitle("January")
+
+#February
+insta.feb <- insta_data %>%
+  filter(Year == "2") %>%
+  mutate(Date=factor(Date, levels=make.unique(Date)))
+
+insta.feb.model <- ggplot(insta.feb, aes(x=Date, y=as.numeric(Reach))) +
+  geom_bar(stat = "identity") + xlab("Post") + ylab("Reach/Post") +
+  ggtitle("February")
+
+#March
+insta.mar <- insta_data %>%
+  filter(Year == "3") %>%
+  mutate(Date=factor(Date, levels=make.unique(Date)))
+
+insta.mar.model <- ggplot(insta.mar, aes(x=Date, y=as.numeric(Reach))) +
+  geom_bar(stat = "identity") + xlab("Post") + ylab("Reach/Post") +
+  ggtitle("March")
+
+#April
+insta.apr <- insta_data %>%
+  filter(Year == "4") %>%
+  mutate(Date=factor(Date, levels=make.unique(Date)))
+
+insta.apr.model <- ggplot(insta.apr, aes(x=Date, y=as.numeric(Reach))) +
+  geom_bar(stat = "identity") + xlab("Post") + ylab("Reach/Post") +
+  ggtitle("April")
+
+#May
+insta.may <- insta_data %>%
+  filter(Year == "5") %>%
+  mutate(Date=factor(Date, levels=make.unique(Date)))
+
+insta.may.model <- ggplot(insta.may, aes(x=Date, y=as.numeric(Reach))) +
+  geom_bar(stat = "identity") + xlab("Post") + ylab("Reach/Post") +
+  ggtitle("May")
+
+#June
+insta.june <- insta_data %>%
+  filter(Year == "6") %>%
+  mutate(Date=factor(Date, levels=make.unique(Date)))
+
+insta.june.model <- ggplot(insta.june, aes(x=Date, y=as.numeric(Reach))) +
+  geom_bar(stat = "identity") + xlab("Post") + ylab("Reach/Post") +
+  ggtitle("June")
+
+(insta.jan.model + theme(axis.text.x=element_blank(), axis.ticks.x=element_blank()) +
+  insta.feb.model + theme(axis.text.x=element_blank(), axis.ticks.x=element_blank()) +
+  insta.mar.model + theme(axis.text.x=element_blank(), axis.ticks.x=element_blank())) /
+(insta.apr.model + theme(axis.text.x=element_blank(), axis.ticks.x=element_blank()) +
+  insta.may.model + theme(axis.text.x=element_blank(), axis.ticks.x=element_blank()) +
+  insta.june.model + theme(axis.text.x=element_blank(), axis.ticks.x=element_blank()))
+
+```
+
+Note the difference in y-axis count for each graph.
+
+- The post with the highest Reach in January is an informative post for the MMP and the average Reach for this month is 270.5556.
+- The post with the highest Reach in February is a post for an event at Hillside Cafe and the average Reach for this month is 229.
+- The post with the highest Reach in March is a Student Poll and the average Reach for this month is 184.5455.  
+- The post with the highest Reach in April is a Student Poll and the average Reach for this month is 158.7273.
+- The post with the highest Reach in May is an informative post on WSU Facility Hours and the average Reach for this month is 154.8889.
+- The post with the highest Reach in June is a general video for Southside Cafe and the average Reach for this month is 132.5.
+
+The average reach per month is consistent for the most part. The posts with a high Reach is very telling to what type of content users are responding to. Informative, student polls, and videos have seemed to receive positive feedback throughout the first six months of the year.
+
+```{r, echo=FALSE, include=TRUE, warning=FALSE}
+
+#July
+insta.july <- insta_data %>%
+  filter(Year == "7") %>%
+  mutate(Date=factor(Date, levels=make.unique(Date)))
+
+insta.july.model <- ggplot(insta.july, aes(x=Date, y=as.numeric(Reach))) +
+  geom_bar(stat = "identity") + xlab("Post") + ylab("Reach/Post") +
+  ggtitle("July")
+
+#August
+insta.aug <- insta_data %>%
+  filter(Year == "8") %>%
+  mutate(Date=factor(Date, levels=make.unique(Date)))
+
+insta.aug.model <- ggplot(insta.aug, aes(x=Date, y=as.numeric(Reach))) +
+  geom_bar(stat = "identity") + xlab("Post") + ylab("Reach/Post") +
+  ggtitle("August")
+
+#September
+insta.sept <- insta_data %>%
+  filter(Year == "9") %>%
+  mutate(Date=factor(Date, levels=make.unique(Date)))
+
+insta.sept.model <- ggplot(insta.sept, aes(x=Date, y=as.numeric(Reach))) +
+  geom_bar(stat = "identity") + xlab("Post") + ylab("Reach/Post") +
+  ggtitle("September")
+
+#October
+insta.oct <- insta_data %>%
+  filter(Year == "10") %>%
+  mutate(Date=factor(Date, levels=make.unique(Date)))
+
+insta.oct.model <- ggplot(insta.oct, aes(x=Date, y=as.numeric(Reach))) +
+  geom_bar(stat = "identity") + xlab("Post") + ylab("Reach/Post") +
+  ggtitle("October")
+
+#November
+insta.nov <- insta_data %>%
+  filter(Year == "11") %>%
+  mutate(Date=factor(Date, levels=make.unique(Date)))
+
+insta.nov.model <- ggplot(insta.oct, aes(x=Date, y=as.numeric(Reach))) +
+  geom_bar(stat = "identity") + xlab("Post") + ylab("Reach/Post") +
+  ggtitle("November")
+
+(insta.july.model + theme(axis.text.x=element_blank(), axis.ticks.x=element_blank()) +
+  insta.aug.model + theme(axis.text.x=element_blank(), axis.ticks.x=element_blank()) +
+  insta.sept.model + theme(axis.text.x=element_blank(), axis.ticks.x=element_blank())) /
+(insta.oct.model + theme(axis.text.x=element_blank(), axis.ticks.x=element_blank()) +
+  insta.nov.model + theme(axis.text.x=element_blank(), axis.ticks.x=element_blank()))
+
+```
+
+Note the difference in y-axis count for each graph.
+
+- The post with the highest Reach in July is a facility highlight for Espresso Bars and the average Reach for this month is 166.0909.
+- The post with the highest Reach in August is an informative post for the Dining Centers and the average Reach for this month is 345.2632.
+- The post with the highest Reach in September is a COT Promo video for Northside Cafe and the average Reach for this month is 345.2632.
+- The post with the highest Reach in October is a COT Promo video for Southside Cafe and the average Reach for this month is 542.25.
+- The post with the highest Reach in November is a Facility Highlight video for Northside Cafe and the average Reach for this month is 288.8667.
+
+The average reach per months have shown to heavily increase for the last half of this year. Users respond to informative, facility highlights, and event videos very well. The high reach in August can be explained through the shoutout from the main WSU Pullman Instagram account. This shoutout generated a lot of users to find the dining account and therefore engagement has continued to increase since this month. Users respond well to videos. This can be seen by the popular posts for September, October, and November, all being informative and fun videos.
+
+# Year 2022 Instagram Stories
+
+```{r, echo=FALSE, include=TRUE, warning=FALSE}
+
+insta_stories_22 <- insta_stories %>%
+  filter(Date == "2022")
+
+insta_stories_reach <- as.numeric(insta_stories_22$Reach)
+insta_stories_avg_reach <- mean(insta_stories_reach, na.rm = FALSE)
+
+paste("The average Reach count per Instagram Story:", insta_stories_avg_reach)
+
+```
+
+The average Reach for Instagram Stories is 161.243243243243. Due to this high number it is safe to say Instagram Stories should be continued as they generate positive traction on the Instagram account.
+
+# Year 2022 Twitter Engagement
+
+## Year 2022 Month to Month Engagement
+
+```{r, echo=FALSE, include=TRUE, warning=FALSE}
+
+#January
+twitter.jan <- twitter_data %>%
+  filter(Year == "1") %>%
+  mutate(Date=factor(Date, levels=make.unique(Date)))
+
+twitter.jan.model <- ggplot(twitter.jan, aes(x=Date, y=Engage..Rate....)) +
+  geom_bar(stat = "identity") + xlab("Post") + ylab("Engagement/Post") +
+  ggtitle("January")
+
+#February
+twitter.feb <- twitter_data %>%
+  filter(Year == "2") %>%
+  mutate(Date=factor(Date, levels=make.unique(Date)))
+
+twitter.feb.model <- ggplot(twitter.feb, aes(x=Date, y=Engage..Rate....)) +
+  geom_bar(stat = "identity") + xlab("Post") + ylab("Engagement/Post") +
+  ggtitle("February")
+
+#March
+twitter.mar <- twitter_data %>%
+  filter(Year == "3") %>%
+  mutate(Date=factor(Date, levels=make.unique(Date)))
+
+twitter.mar.model <- ggplot(twitter.mar, aes(x=Date, y=Engage..Rate....)) +
+  geom_bar(stat = "identity") + xlab("Post") + ylab("Engagement/Post") +
+  ggtitle("March")
+
+#April
+twitter.apr <- twitter_data %>%
+  filter(Year == "4") %>%
+  mutate(Date=factor(Date, levels=make.unique(Date)))
+
+twitter.apr.model <- ggplot(twitter.apr, aes(x=Date, y=Engage..Rate....)) +
+  geom_bar(stat = "identity") + xlab("Post") + ylab("Engagement/Post") +
+  ggtitle("April")
+
+#May
+twitter.may <- twitter_data %>%
+  filter(Year == "5") %>%
+  mutate(Date=factor(Date, levels=make.unique(Date)))
+
+twitter.may.model <- ggplot(twitter.may, aes(x=Date, y=Engage..Rate....)) +
+  geom_bar(stat = "identity") + xlab("Post") + ylab("Engagement/Post") +
+  ggtitle("May")
+
+#June
+twitter.june <- twitter_data %>%
+  filter(Year == "6") %>%
+  mutate(Date=factor(Date, levels=make.unique(Date)))
+
+twitter.june.model <- ggplot(twitter.june, aes(x=Date, y=Engage..Rate....)) +
+  geom_bar(stat = "identity") + xlab("Post") + ylab("Engagement/Post") +
+  ggtitle("June")
+
+(twitter.jan.model + theme(axis.text.x=element_blank(), axis.ticks.x=element_blank()) +
+  twitter.feb.model + theme(axis.text.x=element_blank(), axis.ticks.x=element_blank()) +
+  twitter.mar.model + theme(axis.text.x=element_blank(), axis.ticks.x=element_blank())) /
+(twitter.apr.model + theme(axis.text.x=element_blank(), axis.ticks.x=element_blank()) +
+  twitter.may.model + theme(axis.text.x=element_blank(), axis.ticks.x=element_blank()) +
+  twitter.june.model + theme(axis.text.x=element_blank(), axis.ticks.x=element_blank()))
+
+```
+
+Note the difference in y-axis count for each graph.
+
+- The post with the highest Engagement Rate in January is an informative post for Crimson bakery and the average Reach for this month is 2.91%.
+- The post with the highest Engagement Rate in February is an informative post for Coug Eats and the average Reach for this month is 1.05%.
+- The post with the highest Engagement Rate in March is an informative post for WSU Facility Hours and the average Reach for this month is 1.770588%.
+- The post with the highest Engagement Rate in April is an informative post for Southside Cafe and the average Reach for this month is 2.15%.
+The post with the highest Engagement Rate in May is an informative post for WSU Facility Hours and the average Reach for this month is 2.27%.
+- The post with the highest Engagement Rate in June is an general post for Southside Cafe and the average Reach for this month is 2%.
+
+Again, it is clear users react strongly to informative posts as majority of the posts with the highest Engagement Rates are informative. The average Engagement Rates for each month are very similar and steady.
+
+```{r, echo=FALSE, include=TRUE, warning=FALSE}
+
+#July
+twitter.july <- twitter_data %>%
+  filter(Year == "7") %>%
+  mutate(Date=factor(Date, levels=make.unique(Date)))
+
+twitter.july.model <- ggplot(twitter.july, aes(x=Date, y=Engage..Rate....)) +
+  geom_bar(stat = "identity") + xlab("Post") + ylab("Engagement/Post") +
+  ggtitle("July")
+
+#August
+twitter.aug <- twitter_data %>%
+  filter(Year == "8") %>%
+  mutate(Date=factor(Date, levels=make.unique(Date)))
+
+twitter.aug.model <- ggplot(twitter.aug, aes(x=Date, y=Engage..Rate....)) +
+  geom_bar(stat = "identity") + xlab("Post") + ylab("Engagement/Post") +
+  ggtitle("August")
+
+#September
+twitter.sept <- twitter_data %>%
+  filter(Year == "9") %>%
+  mutate(Date=factor(Date, levels=make.unique(Date)))
+
+twitter.sept.model <- ggplot(twitter.sept, aes(x=Date, y=Engage..Rate....)) +
+  geom_bar(stat = "identity") + xlab("Post") + ylab("Engagement/Post") +
+  ggtitle("September")
+
+#October
+twitter.oct <- twitter_data %>%
+  filter(Year == "10") %>%
+  mutate(Date=factor(Date, levels=make.unique(Date)))
+
+twitter.oct.model <- ggplot(twitter.oct, aes(x=Date, y=Engage..Rate....)) +
+  geom_bar(stat = "identity") + xlab("Post") + ylab("Engagement/Post") +
+  ggtitle("October")
+
+#November
+twitter.nov <- twitter_data %>%
+  filter(Year == "11") %>%
+  mutate(Date=factor(Date, levels=make.unique(Date)))
+
+twitter.nov.model <- ggplot(twitter.oct, aes(x=Date, y=Engage..Rate....)) +
+  geom_bar(stat = "identity") + xlab("Post") + ylab("Engagement/Post") +
+  ggtitle("November")
+
+(twitter.july.model + theme(axis.text.x=element_blank(), axis.ticks.x=element_blank()) +
+  twitter.aug.model + theme(axis.text.x=element_blank(), axis.ticks.x=element_blank()) +
+  twitter.sept.model + theme(axis.text.x=element_blank(), axis.ticks.x=element_blank())) /
+(twitter.oct.model + theme(axis.text.x=element_blank(), axis.ticks.x=element_blank()) +
+  twitter.nov.model + theme(axis.text.x=element_blank(), axis.ticks.x=element_blank()))
+
+```
+
+Note the difference in y-axis count for each graph.
+
+- The post with the highest Engagement Rate in July is an Employee Profile for Southside Cafe and the average Reach for this month is 2.572727%.
+- The post with the highest Engagement Rate in August is an event post for all three Dining Centers and the average Reach for this month is 3.944444%.
+- The post with the highest Engagement Rate in September is a Meal Highlight from Hillside Cafe and the average Reach for this month is 3.738462%.
+- The post with the highest Engagement Rate in October is a COT Promo for Hillside Cafe and the average Reach for this month is 3.966667%.
+The post with the highest Engagement Rate in November is a graphic for an event at Hillside Cafe and the average Reach for this month is 3.65%.
+
+The average Engagement Rates for the last half of the year have seem to increase from the earlier months. These months have shown higher Engagement Rates for series other than informative posts. Employee Profiles, Meal Highlights, event promotional posts, and graphics, have shown to perform better within these past few months.
+
+# Analytical Questions
+
+The below research questions focus on analyzing data from 2022. In special cases, if there is not enough content from the year to perform an accurate analysis, data use will expand to the years 2019-2022. 
+
+## Question 1 - Do users respond better to professional or live content better?
+
+## Instagram
+
+```{r, echo=FALSE, include=TRUE, warning=FALSE}
+#Instagram
+
+insta_prof_22 <- insta_data %>%
+  filter(Year22 == "2022") %>%
+  filter(Image == "Professional")
+
+insta_num_prof_reach <- as.numeric(insta_prof_22$Reach)
+insta_avg_prof_reach <- mean(insta_num_prof_reach, na.rm = FALSE)
+
+paste("The average Reach count per Professional content:", insta_avg_prof_reach)
+
+insta_live_22 <- insta_data %>%
+  filter(Year22 == "2022") %>%
+  filter(Image == "Live")
+
+insta_num_live_reach <- as.numeric(insta_live_22$Reach)
+insta_avg_live_engage <- mean(insta_num_live_reach, na.rm = FALSE)
+
+paste("The average Reach count per Live content:", insta_avg_live_engage)
+
+```
+
+The content "Professional" consists of content taken by photographers and provided from the shared drives. The content "Live" consists of content taken by myself, in person and on my phone. Users seem to respond better to Live content as these posts cover events, meal highlights, and other in-person related content.
+
+## Twitter
+
+```{r, echo=FALSE, include=TRUE, warning=FALSE}
+#Twitter
+
+twitter_prof_22 <- twitter_data %>%
+  filter(Year22 == "2022") %>%
+  filter(Image == "Professional")
+
+twitter_num_prof_reach <- as.numeric(twitter_prof_22$Engage..Rate....)
+twitter_avg_prof_reach <- mean(twitter_num_prof_reach, na.rm = FALSE)
+
+paste("The average Engagement Rate per Professional content:", twitter_avg_prof_reach)
+
+twitter_live_22 <- twitter_data %>%
+  filter(Year22 == "2022") %>%
+  filter(Image == "Live")
+
+twitter_num_live_reach <- as.numeric(twitter_live_22$Engage..Rate....)
+twitter_avg_live_engage <- mean(twitter_num_live_reach, na.rm = FALSE)
+
+paste("The average Engagement Rate per Live content:", twitter_avg_live_engage)
+
+```
+
+Users are also responding better to Live content on Twitter as they are on Instagram.
+
+## Question 2 - How are users responding to different types of content?
+
+This question analyzes the performance of different content consisting of food, students, chefs, facilities, and other.
+
+## Instagram
+
+```{r, echo=FALSE, include=TRUE, warning=FALSE}
+
+#Instagram
+
+#2022 Data
+insta_data_22 <- insta_data %>%
+  filter(Year22 == "2022") %>%
+  mutate(Date=factor(Date, levels=make.unique(Date)))
+
+#Food Content
+insta_food <- insta_data_22 %>%
+  filter(Content == "Food")
+
+insta_food_likes <- ggplot(insta_food, aes(x = Date, y = as.numeric(Likes))) +
+  geom_bar(stat = "identity") + xlab("Post") + ylab("Likes/Post") +
+  ggtitle("Food Likes")
+
+#Student Content
+insta_students <- insta_data_22 %>%
+  filter(Content == "Students")
+
+insta_students_likes <- ggplot(insta_students, aes(x = Date, y = as.numeric(Likes))) +
+  geom_bar(stat = "identity") + xlab("Post") + ylab("Likes/Post") +
+  ggtitle("Students Likes")
+
+#Chefs Content
+insta_chefs <- insta_data_22 %>%
+  filter(Content == "Chefs")
+
+insta_chefs_likes <- ggplot(insta_chefs, aes(x = Date, y = as.numeric(Likes))) +
+  geom_bar(stat = "identity") + xlab("Post") + ylab("Likes/Post") +
+  ggtitle("Chefs Likes")
+
+#Facility Content
+insta_facility <- insta_data_22 %>%
+  filter(Content == "Facility")
+
+insta_facility_likes <- ggplot(insta_facility, aes(x = Date, y = as.numeric(Likes))) +
+  geom_bar(stat = "identity") + xlab("Post") + ylab("Likes/Post") +
+  ggtitle("Facility Likes")
+
+#Other Content
+insta_other <- insta_data_22 %>%
+  filter(Content == "Other")
+
+insta_other_likes <- ggplot(insta_other, aes(x = Date, y = as.numeric(Likes))) +
+  geom_bar(stat = "identity") + xlab("Post") + ylab("Likes/Post") +
+  ggtitle("Other Likes")
+
+(insta_chefs_likes + theme(axis.text.x=element_blank(), axis.ticks.x=element_blank()) +
+insta_other_likes + theme(axis.text.x=element_blank(), axis.ticks.x=element_blank()) +
+insta_facility_likes + theme(axis.text.x=element_blank(), axis.ticks.x=element_blank())) /
+  (insta_food_likes + theme(axis.text.x=element_blank(), axis.ticks.x=element_blank()) +
+  insta_students_likes + theme(axis.text.x=element_blank(), axis.ticks.x=element_blank()))
+
+```
+
+Note the difference in y-axis count for each graph.
+
+Content consisting of chefs and other have been posted a handful of time, resulting in smaller graphs. As we focus on the like count for each of the content types, we can see an overall growth in majority of the graphs. Consistent exponential growth is shown in the graphs labeled, "Chefs Likes", "Facility Likes", "Food Likes" and "Student Likes" The like count on Instagram has been shown to be low in the past but throughout this year you can see the growth as time goes on. Users respond well to content of students and food. The average like count for food content on Instagram is 352.9808 and the average like count for student content is 227.35. With this data, it is clear users are reacting to content of food over students.
+
+## Twitter
+
+```{r, echo=FALSE, include=TRUE, warning=FALSE}
+
+#Twitter
+
+#2022 Data
+twitter_data_22 <- twitter_data %>%
+  filter(Year22 == "2022") %>%
+  mutate(Date=factor(Date, levels=make.unique(Date)))
+
+#Food Content
+twitter_food <- twitter_data_22 %>%
+  filter(Content == "Food")
+
+twitter_food_likes <- ggplot(twitter_food, aes(x = Date, y = as.numeric(Likes))) +
+  geom_bar(stat = "identity") + xlab("Post") + ylab("Likes/Post") +
+  ggtitle("Food Likes")
+
+#Student Content
+twitter_students <- twitter_data_22 %>%
+  filter(Content == "Students")
+
+twitter_students_likes <- ggplot(twitter_students, aes(x = Date, y = as.numeric(Likes))) +
+  geom_bar(stat = "identity") + xlab("Post") + ylab("Likes/Post") +
+  ggtitle("Students Likes")
+
+#Chefs Content
+twitter_chefs <- twitter_data_22 %>%
+  filter(Content == "Chefs")
+
+twitter_chefs_likes <- ggplot(twitter_chefs, aes(x = Date, y = as.numeric(Likes))) +
+  geom_bar(stat = "identity") + xlab("Post") + ylab("Likes/Post") +
+  ggtitle("Chefs Likes")
+
+#Facility Content
+twitter_facility <- twitter_data_22 %>%
+  filter(Content == "Facility")
+
+twitter_facility_likes <- ggplot(twitter_facility, aes(x = Date, y = as.numeric(Likes))) +
+  geom_bar(stat = "identity") + xlab("Post") + ylab("Likes/Post") +
+  ggtitle("Facility Likes")
+
+#Other Content
+twitter_other <- twitter_data_22 %>%
+  filter(Content == "Other")
+
+twitter_other_likes <- ggplot(twitter_other, aes(x = Date, y = as.numeric(Likes))) +
+  geom_bar(stat = "identity") + xlab("Post") + ylab("Likes/Post") +
+  ggtitle("Other Likes")
+
+(twitter_chefs_likes + theme(axis.text.x=element_blank(), axis.ticks.x=element_blank()) +
+twitter_other_likes + theme(axis.text.x=element_blank(), axis.ticks.x=element_blank()) +
+twitter_facility_likes + theme(axis.text.x=element_blank(), axis.ticks.x=element_blank())) /
+  (twitter_food_likes + theme(axis.text.x=element_blank(), axis.ticks.x=element_blank()) +
+  twitter_students_likes + theme(axis.text.x=element_blank(), axis.ticks.x=element_blank()))
+
+```
+
+Note the difference in y-axis count for each graph.
+
+The graphs above for Twitter show to have a lot of gaps causing discrepancy with the the same graphs for Instagram. Again, chefs and other have been posted a handful of time, resulting in smaller graphs. The like count for facility content is showing to increase over the year. Comparing student and food content, there are a fair amount of gaps in the data and this is because some posts have received a zero for like count. The average like count for food content on Twitter is 1% and the average like count for student content is 1.363636%. There are some jumps in the data but overall, users are responding better to content of students than the others.
+
+## Question 3 - Are videos and graphics worth continuing in future semesters?
+
+## Instagram
+
+```{r, echo=FALSE, include=TRUE, warning=FALSE}
+#Instagram
+
+#Videos in 2022
+insta_videos <- insta_data %>%
+  filter(Type == "Video") %>%
+  filter(Year22 == "2022") %>%
+  mutate(Date=factor(Date, levels=Date))
+
+insta_videos_reach <- ggplot(insta_videos, aes(x = Date, y = as.numeric(Reach))) +
+  geom_bar(stat = "identity") + xlab("Video Post") + ylab("Reach/Video") +
+  ggtitle("Video Reach")
+
+insta_videos_views <- ggplot(insta_videos, aes(x = Date, y = as.numeric(Views))) +
+  geom_bar(stat = "identity") + xlab("Video Post") + ylab("Views/Video") +
+  ggtitle("Video Views")
+
+insta_videos_likes <- ggplot(insta_videos, aes(x = Date, y = as.numeric(Likes))) +
+  geom_bar(stat = "identity") + xlab("Video Post") + ylab("Likes/Video") +
+  ggtitle("Video Likes")
+
+#Graphics 19-22
+insta_graphics <- insta_data %>%
+  filter(Type == "Graphic") %>%
+  mutate(Date=factor(Date, levels=Date))
+  
+insta_graphics_reach <- ggplot(insta_graphics, aes(x = Date, y = as.numeric(Reach))) +
+  geom_bar(stat = "identity") + xlab("Graphics Post") + ylab("Reach/Graphic") +
+  ggtitle("Graphic Reach")
+
+insta_graphics_likes <- ggplot(insta_graphics, aes(x = Date, y = as.numeric(Likes))) +
+  geom_bar(stat = "identity") + xlab("Graphics Post") + ylab("Likes/Graphic") +
+  ggtitle("Graphic Likes")
+
+(insta_videos_reach + theme(axis.text.x=element_blank(), axis.ticks.x=element_blank()) +
+insta_videos_views + theme(axis.text.x=element_blank(), axis.ticks.x=element_blank()) +
+insta_videos_likes + theme(axis.text.x=element_blank(), axis.ticks.x=element_blank())) /
+  (insta_graphics_reach + theme(axis.text.x=element_blank(), axis.ticks.x=element_blank()) +
+   insta_graphics_likes + theme(axis.text.x=element_blank(), axis.ticks.x=element_blank()))
+
+```
+
+Note the difference in y-axis count for each graph.
+
+When comparing analytics from videos and graphics, this data will focus on Instagram insights as there are not many videos posted on Twitter and there is overall more engagement with the Instagram account. The average Reach count per videos posted is 1125.889 and the average for graphics is 94.92857. There is a huge difference between the two. Due to this difference in averages, it is not a realistic comparison when deciding which type of content to continue over the other. Both videos and graphics are performing well, and have been giving the Instagram account great traction.
+
+## Question 4 - How are the series performing and which ones would be worth continuing? 
+
+This question analyzes the performance of different series implemented on both the Instagram and Twitter accounts. Series consisting of general, informative, meal highlights, event promotion/informative, facility hours, GET App information, allergen information, national days, employee profile, student polls, COT promotion, and facility highlights. 
+
+## Instagram
+
+```{r, echo=FALSE, include=TRUE, warning=FALSE}
+
+#2022 Data
+insta_data_22 <- insta_data %>%
+  filter(Year22 == "2022") %>%
+  mutate(Date=factor(Date, levels=make.unique(Date)))
+
+#General 22
+insta_general <- insta_data_22 %>%
+  filter(Series == "General")
+
+insta_general_reach <- ggplot(insta_general, aes(x = Date, y = as.numeric(Reach))) +
+  geom_bar(stat = "identity") + xlab("Post") + ylab("Reach") +
+  ggtitle("General")
+
+#Informative 22
+insta_info <- insta_data_22 %>%
+  filter(Series == "Informative")
+
+insta_info_reach <- ggplot(insta_info, aes(x = Date, y = as.numeric(Reach))) +
+  geom_bar(stat = "identity") + xlab("Post") + ylab("Reach") +
+  ggtitle("Informative")
+
+#Meal Highlight 22
+insta_meal <- insta_data_22 %>%
+  filter(Series == "Meal Highlight")
+
+insta_meal_reach <- ggplot(insta_meal, aes(x = Date, y = as.numeric(Reach))) +
+  geom_bar(stat = "identity") + xlab("Post") + ylab("Reach") +
+  ggtitle("Meal Highlight")
+
+#Event 22
+insta_event <- insta_data_22 %>%
+  filter(Series == "Event")
+
+insta_event_reach <- ggplot(insta_event, aes(x = Date, y = as.numeric(Reach))) +
+  geom_bar(stat = "identity") + xlab("Post") + ylab("Reach") +
+  ggtitle("Event Promo")
+
+#Facility Hours 22
+insta_fh <- insta_data_22 %>%
+  filter(Series == "Facility Hours")
+
+insta_fh_reach <- ggplot(insta_fh, aes(x = Date, y = as.numeric(Reach))) +
+  geom_bar(stat = "identity") + xlab("Post") + ylab("Reach") +
+  ggtitle("Facility Hours")
+
+#GET App 22
+insta_get <- insta_data_22 %>%
+  filter(Series == "GET App")
+
+insta_get_reach <- ggplot(insta_get, aes(x = Date, y = as.numeric(Reach))) +
+  geom_bar(stat = "identity") + xlab("Post") + ylab("Reach") +
+  ggtitle("Get App")
+
+(insta_general_reach + theme(axis.text.x=element_blank(), axis.ticks.x=element_blank()) +
+insta_info_reach + theme(axis.text.x=element_blank(), axis.ticks.x=element_blank()) +
+insta_meal_reach + theme(axis.text.x=element_blank(), axis.ticks.x=element_blank())) /
+  (insta_event_reach + theme(axis.text.x=element_blank(), axis.ticks.x=element_blank()) +
+  insta_fh_reach + theme(axis.text.x=element_blank(), axis.ticks.x=element_blank()) +
+  insta_get_reach + theme(axis.text.x=element_blank(), axis.ticks.x=element_blank()))
+
+```
+
+```{r, echo=FALSE, include=TRUE, warning=FALSE}
+
+#Instagram
+insta_data_22 <- insta_data %>%
+  filter(Year22 == "2022")
+
+#General 22
+insta_general <- insta_data_22 %>%
+  filter(Series == "General")
+
+gen <- as.numeric(insta_general$Reach)
+gen.avg <- mean(gen, na.rm = FALSE)
+paste("The average Reach count per Series 'General' post:", gen.avg)
+
+#Informative 22
+insta_info <- insta_data_22 %>%
+  filter(Series == "Informative")
+
+info <- as.numeric(insta_info$Reach)
+info.avg <- mean(info, na.rm = FALSE)
+paste("The average Reach count per Series 'Informative' post:", info.avg)
+
+#Meal Highlight 22
+insta_meal <- insta_data_22 %>%
+  filter(Series == "Meal Highlight")
+
+meal <- as.numeric(insta_meal$Reach)
+meal.avg <- mean(meal, na.rm = FALSE)
+paste("The average Reach count per Series 'Meal Highlight' post:", meal.avg)
+
+#Event 22
+insta_event <- insta_data_22 %>%
+  filter(Series == "Event")
+
+event <- as.numeric(insta_event$Reach)
+event.avg <- mean(event, na.rm = FALSE)
+paste("The average Reach count per Series 'Event' post:", event.avg)
+
+#Facility Hours 22
+insta_fh <- insta_data_22 %>%
+  filter(Series == "Facility Hours")
+
+fh <- as.numeric(insta_fh$Reach)
+fh.avg <- mean(fh, na.rm = FALSE)
+paste("The average Reach count per Series 'Facility Hours' post:", fh.avg)
+
+#GET App 22
+insta_get <- insta_data_22 %>%
+  filter(Series == "GET App")
+
+get <- as.numeric(insta_get$Reach)
+get.avg <- mean(get, na.rm = FALSE)
+paste("The average Reach count per Series 'GET App' post:", get.avg)
+
+```
+
+Note the difference in y-axis count for each graph.
+
+There are jumps and dips in all of the graphs above. The different types of series implemented have shown to generate an immense amount of reach this year. The GET App looks to have potential and posting more of this series could generate positive numbers as there is growth shown in the graph above. Breaking down the averages of the data we can see the averages have a steady climb upwards, the averages hit a high when you look at Meal Highlights while the lowest averages being General and Informative. This is important to note as users are responding better to different series more than others.
+
+```{r, echo=FALSE, include=TRUE, warning=FALSE}
+
+#2022 Data
+insta_data_22 <- insta_data %>%
+  filter(Year22 == "2022") %>%
+  mutate(Date=factor(Date, levels=make.unique(Date)))
+
+#Allergen
+insta_allergen <- insta_data_22 %>%
+  filter(Series == "Allergen")
+
+insta_allergen_reach <- ggplot(insta_allergen, aes(x = Date, y = as.numeric(Reach))) +
+  geom_bar(stat = "identity") + xlab("Post") + ylab("Reach") +
+  ggtitle("Allergen")
+
+#National Days
+insta_nd <- insta_data_22 %>%
+  filter(Series == "National Days")
+
+insta_nd_reach <- ggplot(insta_nd, aes(x = Date, y = as.numeric(Reach))) +
+  geom_bar(stat = "identity") + xlab("Post") + ylab("Reach") +
+  ggtitle("National Days")
+
+#Employee Profile
+insta_ep <- insta_data_22 %>%
+  filter(Series == "Employee Prof.")
+
+insta_ep_reach <- ggplot(insta_ep, aes(x = Date, y = as.numeric(Reach))) +
+  geom_bar(stat = "identity") + xlab("Post") + ylab("Reach") +
+  ggtitle("Employee Profile")
+
+#Student Poll
+insta_sp <- insta_data_22 %>%
+  filter(Series == "Student Poll")
+
+insta_sp_reach <- ggplot(insta_sp, aes(x = Date, y = as.numeric(Reach))) +
+  geom_bar(stat = "identity") + xlab("Post") + ylab("Reach") +
+  ggtitle("Student Poll")
+
+#COT Promo
+insta_cot <- insta_data_22 %>%
+  filter(Series == "COT Promo")
+
+insta_cot_reach <- ggplot(insta_cot, aes(x = Date, y = as.numeric(Reach))) +
+  geom_bar(stat = "identity") + xlab("Post") + ylab("Reach") +
+  ggtitle("COT Promo")
+
+#Facility Highlight
+insta_fh <- insta_data_22 %>%
+  filter(Series == "Facility High.")
+
+insta_fh_reach <- ggplot(insta_fh, aes(x = Date, y = as.numeric(Reach))) +
+  geom_bar(stat = "identity") + xlab("Post") + ylab("Reach") +
+  ggtitle("Facility High.")
+
+(insta_allergen_reach + theme(axis.text.x=element_blank(), axis.ticks.x=element_blank()) +
+insta_nd_reach + theme(axis.text.x=element_blank(), axis.ticks.x=element_blank()) +
+insta_ep_reach + theme(axis.text.x=element_blank(), axis.ticks.x=element_blank())) /
+  (insta_sp_reach + theme(axis.text.x=element_blank(), axis.ticks.x=element_blank()) +
+  insta_cot_reach + theme(axis.text.x=element_blank(), axis.ticks.x=element_blank()) +
+  insta_fh_reach + theme(axis.text.x=element_blank(), axis.ticks.x=element_blank()))
+
+```
+
+```{r, echo=FALSE, include=TRUE, warning=FALSE}
+
+#Instagram
+insta_data_22 <- insta_data %>%
+  filter(Year22 == "2022")
+
+#Allergen
+insta_allergen <- insta_data_22 %>%
+  filter(Series == "Allergen")
+
+allergen <- as.numeric(insta_allergen$Reach)
+allergen.avg <- mean(allergen, na.rm = FALSE)
+paste("The average Reach count per Series 'Allergen' post:", allergen.avg)
+
+#National Days
+insta_nd <- insta_data_22 %>%
+  filter(Series == "National Days")
+
+nd <- as.numeric(insta_nd$Reach)
+nd.avg <- mean(nd, na.rm = FALSE)
+paste("The average Reach count per Series 'National Days' post:", nd.avg)
+
+#Employee Profile
+insta_ep <- insta_data_22 %>%
+  filter(Series == "Employee Prof.")
+
+ep <- as.numeric(insta_ep$Reach)
+ep.avg <- mean(ep, na.rm = FALSE)
+paste("The average Reach count per Series 'Employee Profile' post:", ep.avg)
+
+#Student Poll
+insta_sp <- insta_data_22 %>%
+  filter(Series == "Student Poll")
+
+sp <- as.numeric(insta_sp$Reach)
+sp.avg <- mean(sp, na.rm = FALSE)
+paste("The average Reach count per Series 'Student Poll' post:", sp.avg)
+
+#COT Promo
+insta_cot <- insta_data_22 %>%
+  filter(Series == "COT Promo")
+
+cot <- as.numeric(insta_cot$Reach)
+cot.avg <- mean(cot, na.rm = FALSE)
+paste("The average Reach count per Series 'COT Promo' post:", cot.avg)
+
+#Facility Highlight
+insta_fh <- insta_data_22 %>%
+  filter(Series == "Facility High.")
+
+fh <- as.numeric(insta_fh$Reach)
+fh.avg <- mean(fh, na.rm = FALSE)
+paste("The average Reach count per Series 'Facility Highlight' post:", fh.avg)
+
+```
+
+Note the difference in y-axis count for each graph.
+
+The averages for this series are a lot higher than the previous bunch. With the lowest average out of the group being the series Allergen, which is to be expected as there were not very many posts this year that fall into this category. The highest average out of this group is COT Promo. This is also expected as most of the COT Promotion this year have been videos and LIVE content at the events and such. Overall the series in popularity line up as: COT Promo, National Days, Event, Meal Highlight, Facility Highlight, Student Poll. GET App, General, Informative, Employee Profile, and Allergen.
+
+# Twitter
+
+```{r, echo=FALSE, include=TRUE, warning=FALSE}
+
+#2022 Data
+twitter_data_22 <- twitter_data %>%
+  filter(Year22 == "2022") %>%
+  mutate(Date=factor(Date, levels=make.unique(Date)))
+
+#General 22
+twitter_general <- twitter_data_22 %>%
+  filter(Series == "General")
+
+twitter_general_reach <- ggplot(twitter_general, aes(x = Date, y = as.numeric(Engage..Rate....))) +
+  geom_bar(stat = "identity") + xlab("Post") + ylab("Engagement/Post") +
+  ggtitle("General")
+
+#Informative 22
+twitter_info <- twitter_data_22 %>%
+  filter(Series == "Informative")
+
+twitter_info_reach <- ggplot(twitter_info, aes(x = Date, y = as.numeric(Engage..Rate....))) +
+  geom_bar(stat = "identity") + xlab("Post") + ylab("Engagement/Post") +
+  ggtitle("Informative")
+
+#Meal Highlight 22
+twitter_meal <- twitter_data_22 %>%
+  filter(Series == "Meal Highlight")
+
+twitter_meal_reach <- ggplot(twitter_meal, aes(x = Date, y = as.numeric(Engage..Rate....))) +
+  geom_bar(stat = "identity") + xlab("Post") + ylab("Engagement/Post") +
+  ggtitle("Meal Highlight")
+
+#Event 22
+twitter_event <- twitter_data_22 %>%
+  filter(Series == "Event")
+
+twitter_event_reach <- ggplot(twitter_event, aes(x = Date, y = as.numeric(Engage..Rate....))) +
+  geom_bar(stat = "identity") + xlab("Post") + ylab("Engagement/Post") +
+  ggtitle("Event Promo")
+
+#Facility Hours 22
+twitter_fh <- twitter_data_22 %>%
+  filter(Series == "Facility Hours")
+
+twitter_fh_reach <- ggplot(twitter_fh, aes(x = Date, y = as.numeric(Engage..Rate....))) +
+  geom_bar(stat = "identity") + xlab("Post") + ylab("Engagement/Post") +
+  ggtitle("Facility Hours")
+
+#GET App 22
+twitter_get <- twitter_data_22 %>%
+  filter(Series == "GET App")
+
+twitter_get_reach <- ggplot(twitter_get, aes(x = Date, y = as.numeric(Engage..Rate....))) +
+  geom_bar(stat = "identity") + xlab("Post") + ylab("Engagement/Post") +
+  ggtitle("Get App")
+
+(twitter_general_reach + theme(axis.text.x=element_blank(), axis.ticks.x=element_blank()) +
+twitter_info_reach + theme(axis.text.x=element_blank(), axis.ticks.x=element_blank()) +
+twitter_meal_reach + theme(axis.text.x=element_blank(), axis.ticks.x=element_blank())) /
+  (twitter_event_reach + theme(axis.text.x=element_blank(), axis.ticks.x=element_blank()) +
+  twitter_fh_reach + theme(axis.text.x=element_blank(), axis.ticks.x=element_blank()) +
+  twitter_get_reach + theme(axis.text.x=element_blank(), axis.ticks.x=element_blank()))
+
+```
+
+
+```{r, echo=FALSE, include=TRUE, warning=FALSE}
+
+#Twitter
+twitter_data_22 <- twitter_data %>%
+  filter(Year22 == "2022")
+
+#General 22
+twitter_general <- twitter_data_22 %>%
+  filter(Series == "General")
+
+gen <- as.numeric(twitter_general$Engage..Rate....)
+gen.avg <- mean(gen, na.rm = FALSE)
+paste("The average Engagement Rate per Series 'General' post:", gen.avg)
+
+#Informative 22
+twitter_info <- twitter_data_22 %>%
+  filter(Series == "Informative")
+
+info <- as.numeric(twitter_info$Engage..Rate....)
+info.avg <- mean(info, na.rm = FALSE)
+paste("The average Engagement Rate per Series 'Informative' post:", info.avg)
+
+#Meal Highlight 22
+twitter_meal <- twitter_data_22 %>%
+  filter(Series == "Meal Highlight")
+
+meal <- as.numeric(twitter_meal$Engage..Rate....)
+meal.avg <- mean(meal, na.rm = FALSE)
+paste("The average Engagement Rate per Series 'Meal Highlight' post:", meal.avg)
+
+#Event 22
+twitter_event <- twitter_data_22 %>%
+  filter(Series == "Event")
+
+event <- as.numeric(twitter_event$Engage..Rate....)
+event.avg <- mean(event, na.rm = FALSE)
+paste("The average Engagement Rate per Series 'Event' post:", event.avg)
+
+#Facility Hours 22
+twitter_fh <- twitter_data_22 %>%
+  filter(Series == "Facility Hours")
+
+fh <- as.numeric(twitter_fh$Engage..Rate....)
+fh.avg <- mean(fh, na.rm = FALSE)
+paste("The average Engagement Rate per Series 'Facility Hours' post:", fh.avg)
+
+#GET App 22
+twitter_get <- twitter_data_22 %>%
+  filter(Series == "GET App")
+
+get <- as.numeric(twitter_get$Engage..Rate....)
+get.avg <- mean(get, na.rm = FALSE)
+paste("The average Engagement Rate per Series 'GET App' post:", get.avg)
+
+```
+
+Note the difference in y-axis count for each graph.
+
+The graphs above display a good range of numbers throughout the series. There seems to be a steady climb within all the series except for the GET app, which can be telling to how much we post about this series. The averages range pretty consistently. The series with the highest average Engagement Rate is event while the lowest is the GET App. 
+
+```{r, echo=FALSE, include=TRUE, warning=FALSE}
+
+#2022 Data
+twitter_data_22 <- twitter_data %>%
+  filter(Year22 == "2022") %>%
+  mutate(Date=factor(Date, levels=make.unique(Date)))
+
+#Allergen
+twitter_allergen <- twitter_data_22 %>%
+  filter(Series == "Allergen")
+
+twitter_allergen_reach <- ggplot(twitter_allergen, aes(x = Date, y = as.numeric(Engage..Rate....))) +
+  geom_bar(stat = "identity") + xlab("Post") + ylab("Engagement/Post") +
+  ggtitle("Allergen")
+
+#National Days
+twitter_nd <- twitter_data_22 %>%
+  filter(Series == "National Days")
+
+twitter_nd_reach <- ggplot(twitter_nd, aes(x = Date, y = as.numeric(Engage..Rate....))) +
+  geom_bar(stat = "identity") + xlab("Post") + ylab("Engagement/Post") +
+  ggtitle("National Days")
+
+#Employee Profile
+twitter_ep <- twitter_data_22 %>%
+  filter(Series == "Employee Prof.")
+
+twitter_ep_reach <- ggplot(twitter_ep, aes(x = Date, y = as.numeric(Engage..Rate....))) +
+  geom_bar(stat = "identity") + xlab("Post") + ylab("Engagement/Post") +
+  ggtitle("Employee Profile")
+
+#Student Poll
+twitter_sp <- twitter_data_22 %>%
+  filter(Series == "Student Poll")
+
+twitter_sp_reach <- ggplot(twitter_sp, aes(x = Date, y = as.numeric(Engage..Rate....))) +
+  geom_bar(stat = "identity") + xlab("Post") + ylab("Engagement/Post") +
+  ggtitle("Student Poll")
+
+#COT Promo
+twitter_cot <- twitter_data_22 %>%
+  filter(Series == "COT Promo")
+
+twitter_cot_reach <- ggplot(twitter_cot, aes(x = Date, y = as.numeric(Engage..Rate....))) +
+  geom_bar(stat = "identity") + xlab("Post") + ylab("Engagement/Post") +
+  ggtitle("COT Promo")
+
+#Facility Highlight
+twitter_fh <- twitter_data_22 %>%
+  filter(Series == "Facility High.")
+
+twitter_fh_reach <- ggplot(twitter_fh, aes(x = Date, y = as.numeric(Engage..Rate....))) +
+  geom_bar(stat = "identity") + xlab("Post") + ylab("Engagement/Post") +
+  ggtitle("Facility High.")
+
+(twitter_allergen_reach + theme(axis.text.x=element_blank(), axis.ticks.x=element_blank()) +
+twitter_nd_reach + theme(axis.text.x=element_blank(), axis.ticks.x=element_blank()) +
+twitter_ep_reach + theme(axis.text.x=element_blank(), axis.ticks.x=element_blank())) /
+  (twitter_sp_reach + theme(axis.text.x=element_blank(), axis.ticks.x=element_blank()) +
+  twitter_cot_reach + theme(axis.text.x=element_blank(), axis.ticks.x=element_blank()) +
+  twitter_fh_reach + theme(axis.text.x=element_blank(), axis.ticks.x=element_blank()))
+
+```
+
+```{r, echo=FALSE, include=TRUE, warning=FALSE}
+
+#Instagram
+twitter_data_22 <- twitter_data %>%
+  filter(Year22 == "2022")
+
+#Allergen
+twitter_allergen <- twitter_data_22 %>%
+  filter(Series == "Allergen")
+
+allergen <- as.numeric(twitter_allergen$Engage..Rate....)
+allergen.avg <- mean(allergen, na.rm = FALSE)
+paste("The average Engagement Rate per Series 'Allergen' post:", allergen.avg)
+
+#National Days
+twitter_nd <- twitter_data_22 %>%
+  filter(Series == "National Days")
+
+nd <- as.numeric(twitter_nd$Engage..Rate....)
+nd.avg <- mean(nd, na.rm = FALSE)
+paste("The average REngagement Rate per Series 'National Days' post:", nd.avg)
+
+#Employee Profile
+twitter_ep <- twitter_data_22 %>%
+  filter(Series == "Employee Prof.")
+
+ep <- as.numeric(twitter_ep$Engage..Rate....)
+ep.avg <- mean(ep, na.rm = FALSE)
+paste("The average Engagement Rate per Series 'Employee Profile' post:", ep.avg)
+
+#Student Poll
+twitter_sp <- twitter_data_22 %>%
+  filter(Series == "Student Poll")
+
+sp <- as.numeric(twitter_sp$Engage..Rate....)
+sp.avg <- mean(sp, na.rm = FALSE)
+paste("The average Engagement Rate per Series 'Student Poll' post:", sp.avg)
+
+#COT Promo
+twitter_cot <- twitter_data_22 %>%
+  filter(Series == "COT Promo")
+
+cot <- as.numeric(twitter_cot$Engage..Rate....)
+cot.avg <- mean(cot, na.rm = FALSE)
+paste("The average Engagement Rate per Series 'COT Promo' post:", cot.avg)
+
+#Facility Highlight
+twitter_fh <- twitter_data_22 %>%
+  filter(Series == "Facility High.")
+
+fh <- as.numeric(twitter_fh$Engage..Rate....)
+fh.avg <- mean(fh, na.rm = FALSE)
+paste("The average Engagement Rate per Series 'Facility Highlight' post:", fh.avg)
+
+```
+
+Note the difference in y-axis count for each graph.
+
+The graphs above are showing a consistent pattern. With the series, Allergen and Employee Profile being the series with the lowest number of posts, they have good Engagement Rates. In regards to the other series implemented, there is a steady climb with National Days, COT Promo, and Facility Highlights. With the averages ranging from the highest being COT Promo and the lowest being Allergen. The series in order of overall popularity are: Employee Profile, COT Promo, Event, Facility Hours, Informative, Meal Highlight, Student Poll, Facility Highlight, GET App, National Days, and Allergen. These overall results are similar to Instagram as the lowest performing series for both are Allergen but the highest performing series for Twitter is Employee Profile, while COT Promo is the highest for Instagram.
+
+# Conclusion
+
+Starting off with Instagram. The engagement over the years have shown to increase over time. At the start of Fall Semester in 2020 is where insights began to pick up while there was a steady generation of high number during the year of 2021 and 2022. The month to month engagement for Instagram is showing to be increasing as time goes on, especially in the latter half of the year 2022. Lots of variables such as, shoutouts, types of content, and series, have shown to effect these data results. It has been a notable result that users respond well to videos, facility highlights, COT Promos. The majority of content users highly engage with involve other students and interactive posts with the dining centers and different locations on campus. Videos are a big hit on Instagram, especially the Reels. This has shown to generate an immense amount of traction and causing the account to have positive numbers. The series are performing well on the Instagram account. As users are responding to National Days (videos) and COT Promo (videos) better than all the other series. 
+
+Twitter has shown to be progressive in engagement while starting slow in 2020 but picking up pace in the year 2021. This platform seems to perform less in comparison with Instagram. Though engagement rates have shown to have a steady climb, the overall numbers do not compare to the amount of engagement we are receiving on the Instagram account. As users are responding to similar content on Twitter as they are Instagram, it is important to note users are strongly responding to informative posts on this platform. Which is telling to the common use of Twitter is to be informed. Twitter users are also responding better to LIVE event content and content involving other students - in parallel to Instagram. Users are responding better to the series, Employee Profile, and COT Promo, on Twitter. This data could be skewed as there are not very many posts that fall under "Employee Profile" category, but nonetheless, this data is important to note. 
+
+Overall there is plenty to note and take from this project. Users are more active and engaging on Instagram and they are on Twitter. Users are positively reacting well towards videos, LIVE content covering events and more interactive posts on both accounts. There has been a huge increase in numbers comparing this year to previous years. I am very pleased with how both platforms have performed this year and will continue to put these results into practice next semester.
+
